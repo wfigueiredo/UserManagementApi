@@ -1,0 +1,38 @@
+version: '3.5'
+
+services:
+  usermanagementapi:
+    container_name: usermanagementapi
+    image: wfigueiredo/usermanagementapi:latest
+    env_file:
+     - usermanagementapi.env
+    build:
+      context: ./
+      dockerfile: ./Dockerfile
+    ports:
+     - "5000:80"
+     
+  postgres:
+    container_name: postgres_userapi
+    image: postgres
+    environment:
+      - POSTGRES_DB=usermanagementapi
+      - POSTGRES_USER=usermanagementapi
+      - POSTGRES_PASSWORD=usermanagementapi
+      - TZ='GMT-3'
+      - PGTZ='GMT-3'
+    volumes:
+       - postgres:/data/postgres
+    ports:
+      - "5432:5432"
+    networks:
+      - postgres
+    restart: unless-stopped
+ 
+       
+networks:
+  postgres:
+    driver: bridge
+
+volumes:
+    postgres:
